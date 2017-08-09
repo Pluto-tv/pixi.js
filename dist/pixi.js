@@ -1,6 +1,6 @@
 /*!
  * pixi.js - v4.5.4
- * Compiled Wed, 09 Aug 2017 09:16:04 UTC
+ * Compiled Wed, 09 Aug 2017 15:56:59 UTC
  *
  * pixi.js is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -23025,9 +23025,13 @@ var TextMetrics = function () {
         context.font = font;
 
         var outputText = wordWrap ? TextMetrics.wordWrap(text, style, canvas) : text;
-        var lines = outputText.split(/(?:\r\n|\r|\n)/).splice(style.maxLines);
+        var lines = outputText.split(/(?:\r\n|\r|\n)/);
         var lineWidths = new Array(lines.length);
         var maxLineWidth = 0;
+
+        if (lines && style.maxLines >= 0) {
+            lines.splice(style.maxLines);
+        }
 
         for (var i = 0; i < lines.length; i++) {
             var lineWidth = context.measureText(lines[i]).width + (lines[i].length - 1) * style.letterSpacing;
