@@ -10,6 +10,7 @@
     "Richard Davey <rdavey@gmail.com>"
   ],
   "main": "./lib/index.js",
+  "types": "./lib/pixi.js.d.ts",
   "homepage": "http://goodboydigital.com/",
   "bugs": "https://github.com/pixijs/pixi.js/issues",
   "license": "MIT",
