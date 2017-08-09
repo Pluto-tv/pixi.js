@@ -33,6 +33,7 @@ const defaultStyle = {
     wordWrap: false,
     wordWrapWidth: 100,
     leading: 0,
+    maxLines: 10000
 };
 
 /**
@@ -88,6 +89,7 @@ export default class TextStyle
      * @param {string} [style.textBaseline='alphabetic'] - The baseline of the text that is rendered.
      * @param {boolean} [style.wordWrap=false] - Indicates if word wrap should be used
      * @param {number} [style.wordWrapWidth=100] - The width at which text will wrap, it needs wordWrap to be set to true
+     * @param {number} [style.maxLines=10000] - When wordWrap is true, the maximum number of lines to display
      */
     constructor(style)
     {
@@ -638,6 +640,24 @@ export default class TextStyle
         if (this._wordWrapWidth !== wordWrapWidth)
         {
             this._wordWrapWidth = wordWrapWidth;
+            this.styleID++;
+        }
+    }
+
+    /**
+     * When wordWrap is true, the maximum number of lines to display
+     *
+     * @member {number}
+     */
+    get maxLines()
+    {
+        return this._maxLines;
+    }
+    set maxLines(maxLines) // eslint-disable-line require-jsdoc
+    {
+        if (this._maxLines !== maxLines)
+        {
+            this._maxLines = maxLines;
             this.styleID++;
         }
     }

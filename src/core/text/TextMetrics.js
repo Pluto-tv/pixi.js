@@ -49,7 +49,7 @@ export default class TextMetrics
         context.font = font;
 
         const outputText = wordWrap ? TextMetrics.wordWrap(text, style, canvas) : text;
-        const lines = outputText.split(/(?:\r\n|\r|\n)/);
+        const lines = outputText.split(/(?:\r\n|\r|\n)/).splice(style.maxLines);
         const lineWidths = new Array(lines.length);
         let maxLineWidth = 0;
 
