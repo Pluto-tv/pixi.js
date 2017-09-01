@@ -1,6 +1,6 @@
 /*!
  * pixi.js - v4.5.4
- * Compiled Fri, 01 Sep 2017 17:31:26 UTC
+ * Compiled Fri, 01 Sep 2017 17:35:54 UTC
  *
  * pixi.js is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -23075,6 +23075,7 @@ var TextMetrics = function () {
         var continueMark = '';
         var continueMarkWidth = 0;
         var spaceLeft = 0;
+        var wordWidth = 0;
 
         var lines = text.split('\n');
         var wordWrapWidth = style.wordWrapWidth;
@@ -23082,15 +23083,17 @@ var TextMetrics = function () {
 
         for (var i = 0; i < lines.length && (style.maxLines <= 0 || linesEncountered < style.maxLines); i++) {
             spaceLeft = wordWrapWidth - continueMarkWidth;
-            continueMark = style.maxLines <= 0 || linesEncountered !== style.maxLines - 1 ? '' : typeof style.continueMark === 'boolean' ? style.continueMark ? '...' : '' : style.continueMark;
+            continueMark = style.maxLines <= 0 || linesEncountered !== style.maxLines - 1 ? '' : typeof style.continueMark === 'boolean' ? style.continueMark ? '... ' : '' : style.continueMark;
             continueMarkWidth = continueMark && continueMark.length > 0 ? context.measureText(continueMark).width : 0;
 
             var words = lines[i].split(' ');
 
             for (var j = 0; j < words.length && (style.maxLines <= 0 || linesEncountered < style.maxLines); j++) {
-                var wordWidth = context.measureText(words[j]).width;
+                wordWidth = context.measureText(words[j]).width;
+                continueMark = style.maxLines <= 0 || linesEncountered !== style.maxLines - 1 ? '' : typeof style.continueMark === 'boolean' ? style.continueMark ? '... ' : '' : style.continueMark;
+                continueMarkWidth = continueMark && continueMark.length > 0 ? context.measureText(continueMark).width : 0;
 
-                if (style.breakWords && wordWidth > spaceLeft) {
+                if (style.breakWords && wordWidth > spaceLeft && continueMarkWidth > 0) {
                     // Word should be split in the middle
                     var characters = words[j].split('');
 
