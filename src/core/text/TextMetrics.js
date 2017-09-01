@@ -119,7 +119,7 @@ export default class TextMetrics
         for (let i = 0; i < lines.length && (style.maxLines <= 0 || linesEncountered < style.maxLines); i++)
         {
             spaceLeft = wordWrapWidth - continueMarkWidth;
-            continueMark = style.maxLines <= 0 || linesEncountered !== style.maxLines - 1 ? '' : typeof style.continueMark === 'boolean' ? (style.continueMark ? '... ' : '') : style.continueMark;
+            continueMark = style.maxLines <= 0 || linesEncountered !== style.maxLines - 1 ? '' : typeof style.continueMark === 'boolean' ? (style.continueMark ? '...   ' : '') : style.continueMark;
             continueMarkWidth = continueMark && continueMark.length > 0 ? context.measureText(continueMark).width : 0;
             
             const words = lines[i].split(' ');
@@ -127,7 +127,7 @@ export default class TextMetrics
             for (let j = 0; j < words.length && (style.maxLines <= 0 || linesEncountered < style.maxLines); j++)
             {
                 wordWidth = context.measureText(words[j]).width;
-                continueMark = style.maxLines <= 0 || linesEncountered !== style.maxLines - 1 ? '' : typeof style.continueMark === 'boolean' ? (style.continueMark ? '... ' : '') : style.continueMark;
+                continueMark = style.maxLines <= 0 || linesEncountered !== style.maxLines - 1 ? '' : typeof style.continueMark === 'boolean' ? (style.continueMark ? '...   ' : '') : style.continueMark;
                 continueMarkWidth = continueMark && continueMark.length > 0 ? context.measureText(continueMark).width : 0;
 
                 if (style.breakWords && wordWidth > spaceLeft && continueMarkWidth > 0)
@@ -157,7 +157,7 @@ export default class TextMetrics
                                 break;
                             }
                             
-                            continueMark = style.maxLines <= 0 || linesEncountered !== style.maxLines - 1 ? '' : typeof style.continueMark === 'boolean' ? (style.continueMark ? '...' : '') : style.continueMark;
+                            continueMark = style.maxLines <= 0 || linesEncountered !== style.maxLines - 1 ? '' : typeof style.continueMark === 'boolean' ? (style.continueMark ? '...   ' : '') : style.continueMark;
                             continueMarkWidth = continueMark && continueMark.length > 0 ? context.measureText(continueMark).width : 0;
                             
                             result += `\n${character}`;
