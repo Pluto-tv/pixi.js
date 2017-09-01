@@ -1,6 +1,6 @@
 /*!
  * pixi.js - v4.5.4
- * Compiled Fri, 01 Sep 2017 17:26:34 UTC
+ * Compiled Fri, 01 Sep 2017 17:31:26 UTC
  *
  * pixi.js is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -23090,7 +23090,7 @@ var TextMetrics = function () {
             for (var j = 0; j < words.length && (style.maxLines <= 0 || linesEncountered < style.maxLines); j++) {
                 var wordWidth = context.measureText(words[j]).width;
 
-                if (style.breakWords && wordWidth > wordWrapWidth) {
+                if (style.breakWords && wordWidth > spaceLeft) {
                     // Word should be split in the middle
                     var characters = words[j].split('');
 

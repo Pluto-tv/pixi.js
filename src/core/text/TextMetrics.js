@@ -127,7 +127,7 @@ export default class TextMetrics
             {
                 const wordWidth = context.measureText(words[j]).width;
 
-                if (style.breakWords && wordWidth > wordWrapWidth)
+                if (style.breakWords && wordWidth > spaceLeft)
                 {
                     // Word should be split in the middle
                     const characters = words[j].split('');
@@ -188,7 +188,7 @@ export default class TextMetrics
 
                             result += '\n';
                         }
-                        
+
                         result += words[j];
                         spaceLeft = wordWrapWidth - wordWidth;
                     }
