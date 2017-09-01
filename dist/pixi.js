@@ -1,6 +1,6 @@
 /*!
  * pixi.js - v4.5.4
- * Compiled Wed, 09 Aug 2017 15:56:59 UTC
+ * Compiled Fri, 01 Sep 2017 16:53:46 UTC
  *
  * pixi.js is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -23029,10 +23029,6 @@ var TextMetrics = function () {
         var lineWidths = new Array(lines.length);
         var maxLineWidth = 0;
 
-        if (lines && style.maxLines >= 0) {
-            lines.splice(style.maxLines);
-        }
-
         for (var i = 0; i < lines.length; i++) {
             var lineWidth = context.measureText(lines[i]).width + (lines[i].length - 1) * style.letterSpacing;
 
@@ -23075,15 +23071,23 @@ var TextMetrics = function () {
         // Greedy wrapping algorithm that will wrap words as the line grows longer
         // than its horizontal bounds.
         var result = '';
+        var linesEncountered = 0;
+        var continueMark = '';
+        var continueMarkWidth = 0;
+        var spaceLeft = 0;
+
         var lines = text.split('\n');
         var wordWrapWidth = style.wordWrapWidth;
         var characterCache = {};
 
-        for (var i = 0; i < lines.length; i++) {
-            var spaceLeft = wordWrapWidth;
+        for (var i = 0; i < lines.length && (style.maxLines <= 0 || linesEncountered < style.maxLines); i++) {
+            spaceLeft = wordWrapWidth - continueMarkWidth;
+            continueMark = style.maxLines <= 0 || linesEncountered !== style.maxLines - 1 ? '' : typeof style.continueMark === 'boolean' ? style.continueMark ? '...' : '' : style.continueMark;
+            continueMarkWidth = continueMark && continueMark.length > 0 ? context.measureText(continueMark).width : 0;
+
             var words = lines[i].split(' ');
 
-            for (var j = 0; j < words.length; j++) {
+            for (var j = 0; j < words.length && (style.maxLines <= 0 || linesEncountered < style.maxLines); j++) {
                 var wordWidth = context.measureText(words[j]).width;
 
                 if (style.breakWords && wordWidth > wordWrapWidth) {
@@ -23100,8 +23104,19 @@ var TextMetrics = function () {
                         }
 
                         if (characterWidth > spaceLeft) {
+                            if (style.maxLines > 0 && ++linesEncountered >= style.maxLines) {
+                                if (continueMark && continueMark.length > 0) {
+                                    result += continueMark;
+                                }
+
+                                break;
+                            }
+
+                            continueMark = style.maxLines <= 0 || linesEncountered !== style.maxLines - 1 ? '' : typeof style.continueMark === 'boolean' ? style.continueMark ? '...' : '' : style.continueMark;
+                            continueMarkWidth = continueMark && continueMark.length > 0 ? context.measureText(continueMark).width : 0;
+
                             result += '\n' + character;
-                            spaceLeft = wordWrapWidth - characterWidth;
+                            spaceLeft = wordWrapWidth - characterWidth - continueMarkWidth;
                         } else {
                             if (c === 0) {
                                 result += ' ';
@@ -23115,6 +23130,10 @@ var TextMetrics = function () {
                     var wordWidthWithSpace = wordWidth + context.measureText(' ').width;
 
                     if (j === 0 || wordWidthWithSpace > spaceLeft) {
+                        if (style.maxLines > 0 && ++linesEncountered >= style.maxLines) {
+                            break;
+                        }
+
                         // Skip printing the newline if it's the first word of the line that is
                         // greater than the word wrap width.
                         if (j > 0) {
@@ -23313,7 +23332,8 @@ var defaultStyle = {
     wordWrap: false,
     wordWrapWidth: 100,
     leading: 0,
-    maxLines: 10000
+    maxLines: 10000,
+    continueMark: false
 };
 
 /**
@@ -23370,6 +23390,7 @@ var TextStyle = function () {
      * @param {boolean} [style.wordWrap=false] - Indicates if word wrap should be used
      * @param {number} [style.wordWrapWidth=100] - The width at which text will wrap, it needs wordWrap to be set to true
      * @param {number} [style.maxLines=10000] - When wordWrap is true, the maximum number of lines to display
+     * @param {boolean | string} [style.continueMark=false] - When continueMark is true or a string value, the string (or ellipsis) added to a truncated word
      */
     function TextStyle(style) {
         _classCallCheck(this, TextStyle);
@@ -24001,6 +24022,25 @@ var TextStyle = function () {
         {
             if (this._maxLines !== maxLines) {
                 this._maxLines = maxLines;
+                this.styleID++;
+            }
+        }
+
+        /**
+         * When continueMark is true or a string value, the string (or ellipsis) added to a truncated word
+         *
+         * @member {string | boolean}
+         */
+
+    }, {
+        key: 'continueMark',
+        get: function get() {
+            return this._continueMark;
+        },
+        set: function set(continueMark) // eslint-disable-line require-jsdoc
+        {
+            if (this._continueMark !== continueMark) {
+                this._continueMark = continueMark;
                 this.styleID++;
             }
         }

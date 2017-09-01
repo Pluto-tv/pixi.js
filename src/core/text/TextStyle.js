@@ -33,7 +33,8 @@ const defaultStyle = {
     wordWrap: false,
     wordWrapWidth: 100,
     leading: 0,
-    maxLines: 10000
+    maxLines: 10000,
+    continueMark: false
 };
 
 /**
@@ -90,6 +91,7 @@ export default class TextStyle
      * @param {boolean} [style.wordWrap=false] - Indicates if word wrap should be used
      * @param {number} [style.wordWrapWidth=100] - The width at which text will wrap, it needs wordWrap to be set to true
      * @param {number} [style.maxLines=10000] - When wordWrap is true, the maximum number of lines to display
+     * @param {boolean | string} [style.continueMark=false] - When continueMark is true or a string value, the string (or ellipsis) added to a truncated word
      */
     constructor(style)
     {
@@ -658,6 +660,24 @@ export default class TextStyle
         if (this._maxLines !== maxLines)
         {
             this._maxLines = maxLines;
+            this.styleID++;
+        }
+    }
+
+    /**
+     * When continueMark is true or a string value, the string (or ellipsis) added to a truncated word
+     *
+     * @member {string | boolean}
+     */
+    get continueMark()
+    {
+        return this._continueMark;
+    }
+    set continueMark(continueMark) // eslint-disable-line require-jsdoc
+    {
+        if (this._continueMark !== continueMark)
+        {
+            this._continueMark = continueMark;
             this.styleID++;
         }
     }

@@ -1440,7 +1440,7 @@ declare namespace PIXI {
         wordWrap?: boolean;
         wordWrapWidth?: number;
         maxLines?: number;
-
+        continueMark?: string | boolean;
     }
 
     export class TextStyle implements TextStyleOptions {
@@ -1508,6 +1508,8 @@ declare namespace PIXI {
         wordWrapWidth: number;
         protected _maxLines: number;
         maxLines: number;
+        protected _continueMark: string | boolean;
+        continueMark: string | boolean;
 
         toFontString(): string;
 

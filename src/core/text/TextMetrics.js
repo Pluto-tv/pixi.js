@@ -45,18 +45,13 @@ export default class TextMetrics
         const font = style.toFontString();
         const fontProperties = TextMetrics.measureFont(font);
         const context = canvas.getContext('2d');
-
+        
         context.font = font;
 
         const outputText = wordWrap ? TextMetrics.wordWrap(text, style, canvas) : text;
         const lines = outputText.split(/(?:\r\n|\r|\n)/);
         const lineWidths = new Array(lines.length);
         let maxLineWidth = 0;
-
-        if (lines && style.maxLines >= 0)
-        {
-            lines.splice(style.maxLines);
-        }
 
         for (let i = 0; i < lines.length; i++)
         {
@@ -111,16 +106,24 @@ export default class TextMetrics
         // Greedy wrapping algorithm that will wrap words as the line grows longer
         // than its horizontal bounds.
         let result = '';
+        let linesEncountered = 0;
+        let continueMark = '';
+        let continueMarkWidth = 0;
+        let spaceLeft = 0;
+
         const lines = text.split('\n');
         const wordWrapWidth = style.wordWrapWidth;
         const characterCache = {};
 
-        for (let i = 0; i < lines.length; i++)
+        for (let i = 0; i < lines.length && (style.maxLines <= 0 || linesEncountered < style.maxLines); i++)
         {
-            let spaceLeft = wordWrapWidth;
+            spaceLeft = wordWrapWidth - continueMarkWidth;
+            continueMark = style.maxLines <= 0 || linesEncountered !== style.maxLines - 1 ? '' : typeof style.continueMark === 'boolean' ? (style.continueMark ? '...' : '') : style.continueMark;
+            continueMarkWidth = continueMark && continueMark.length > 0 ? context.measureText(continueMark).width : 0;
+            
             const words = lines[i].split(' ');
 
-            for (let j = 0; j < words.length; j++)
+            for (let j = 0; j < words.length && (style.maxLines <= 0 || linesEncountered < style.maxLines); j++)
             {
                 const wordWidth = context.measureText(words[j]).width;
 
@@ -128,7 +131,7 @@ export default class TextMetrics
                 {
                     // Word should be split in the middle
                     const characters = words[j].split('');
-
+                    
                     for (let c = 0; c < characters.length; c++)
                     {
                         const character = characters[c];
@@ -142,8 +145,20 @@ export default class TextMetrics
 
                         if (characterWidth > spaceLeft)
                         {
+                            if (style.maxLines > 0 && ++linesEncountered >= style.maxLines) {
+                                if (continueMark && continueMark.length > 0) 
+                                {
+                                    result += continueMark
+                                }
+
+                                break;
+                            }
+                            
+                            continueMark = style.maxLines <= 0 || linesEncountered !== style.maxLines - 1 ? '' : typeof style.continueMark === 'boolean' ? (style.continueMark ? '...' : '') : style.continueMark;
+                            continueMarkWidth = continueMark && continueMark.length > 0 ? context.measureText(continueMark).width : 0;
+                            
                             result += `\n${character}`;
-                            spaceLeft = wordWrapWidth - characterWidth;
+                            spaceLeft = wordWrapWidth - characterWidth - continueMarkWidth;
                         }
                         else
                         {
@@ -163,6 +178,10 @@ export default class TextMetrics
 
                     if (j === 0 || wordWidthWithSpace > spaceLeft)
                     {
+                        if (style.maxLines > 0 && ++linesEncountered >= style.maxLines) {
+                            break;
+                        }
+
                         // Skip printing the newline if it's the first word of the line that is
                         // greater than the word wrap width.
                         if (j > 0)
