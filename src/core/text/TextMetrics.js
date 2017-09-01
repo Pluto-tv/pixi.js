@@ -178,16 +178,17 @@ export default class TextMetrics
 
                     if (j === 0 || wordWidthWithSpace > spaceLeft)
                     {
-                        if (style.maxLines > 0 && ++linesEncountered >= style.maxLines) {
-                            break;
-                        }
-
                         // Skip printing the newline if it's the first word of the line that is
                         // greater than the word wrap width.
                         if (j > 0)
                         {
+                            if (style.maxLines > 0 && ++linesEncountered >= style.maxLines) {
+                                break;
+                            }
+
                             result += '\n';
                         }
+                        
                         result += words[j];
                         spaceLeft = wordWrapWidth - wordWidth;
                     }

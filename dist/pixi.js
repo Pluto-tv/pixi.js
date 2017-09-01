@@ -1,6 +1,6 @@
 /*!
  * pixi.js - v4.5.4
- * Compiled Fri, 01 Sep 2017 16:53:46 UTC
+ * Compiled Fri, 01 Sep 2017 17:26:34 UTC
  *
  * pixi.js is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -23130,15 +23130,16 @@ var TextMetrics = function () {
                     var wordWidthWithSpace = wordWidth + context.measureText(' ').width;
 
                     if (j === 0 || wordWidthWithSpace > spaceLeft) {
-                        if (style.maxLines > 0 && ++linesEncountered >= style.maxLines) {
-                            break;
-                        }
-
                         // Skip printing the newline if it's the first word of the line that is
                         // greater than the word wrap width.
                         if (j > 0) {
+                            if (style.maxLines > 0 && ++linesEncountered >= style.maxLines) {
+                                break;
+                            }
+
                             result += '\n';
                         }
+
                         result += words[j];
                         spaceLeft = wordWrapWidth - wordWidth;
                     } else {
