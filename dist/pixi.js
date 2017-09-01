@@ -1,6 +1,6 @@
 /*!
  * pixi.js - v4.5.4
- * Compiled Fri, 01 Sep 2017 17:49:04 UTC
+ * Compiled Fri, 01 Sep 2017 17:53:59 UTC
  *
  * pixi.js is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -23083,14 +23083,14 @@ var TextMetrics = function () {
 
         for (var i = 0; i < lines.length && (style.maxLines <= 0 || linesEncountered < style.maxLines); i++) {
             spaceLeft = wordWrapWidth - continueMarkWidth;
-            continueMark = style.maxLines <= 0 || linesEncountered !== style.maxLines - 1 ? '' : typeof style.continueMark === 'boolean' ? style.continueMark ? '...   ' : '' : style.continueMark;
+            continueMark = style.maxLines <= 0 || linesEncountered !== style.maxLines - 1 ? '' : typeof style.continueMark === 'boolean' ? style.continueMark ? '...' : '' : style.continueMark;
             continueMarkWidth = continueMark && continueMark.length > 0 ? context.measureText(continueMark).width : 0;
 
             var words = lines[i].split(' ');
 
             for (var j = 0; j < words.length && (style.maxLines <= 0 || linesEncountered < style.maxLines); j++) {
                 wordWidth = context.measureText(words[j]).width;
-                continueMark = style.maxLines <= 0 || linesEncountered !== style.maxLines - 1 ? '' : typeof style.continueMark === 'boolean' ? style.continueMark ? '...   ' : '' : style.continueMark;
+                continueMark = style.maxLines <= 0 || linesEncountered !== style.maxLines - 1 ? '' : typeof style.continueMark === 'boolean' ? style.continueMark ? '...' : '' : style.continueMark;
                 continueMarkWidth = continueMark && continueMark.length > 0 ? context.measureText(continueMark).width : 0;
 
                 if (style.breakWords && wordWidth > spaceLeft && continueMarkWidth > 0) {
@@ -23106,7 +23106,7 @@ var TextMetrics = function () {
                             characterCache[character] = characterWidth;
                         }
 
-                        if (characterWidth > spaceLeft) {
+                        if (characterWidth > spaceLeft - continueMarkWidth) {
                             if (style.maxLines > 0 && ++linesEncountered >= style.maxLines) {
                                 if (continueMark && continueMark.length > 0) {
                                     result += continueMark;
@@ -23115,7 +23115,7 @@ var TextMetrics = function () {
                                 break;
                             }
 
-                            continueMark = style.maxLines <= 0 || linesEncountered !== style.maxLines - 1 ? '' : typeof style.continueMark === 'boolean' ? style.continueMark ? '...   ' : '' : style.continueMark;
+                            continueMark = style.maxLines <= 0 || linesEncountered !== style.maxLines - 1 ? '' : typeof style.continueMark === 'boolean' ? style.continueMark ? '...' : '' : style.continueMark;
                             continueMarkWidth = continueMark && continueMark.length > 0 ? context.measureText(continueMark).width : 0;
 
                             result += '\n' + character;
